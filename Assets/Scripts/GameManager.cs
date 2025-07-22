@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 
 /// <summary>
 /// GameManager orchestrates the entire round-based flow of TappR.
@@ -23,8 +24,15 @@ public class GameManager : MonoBehaviour
     [Tooltip("How many ring positions should be live this session (3/6/9).")]
     public int ringCount = 3;
 
-    // -------------- Runtime collections ----------------
-    private readonly List<RingBehaviour> _rings = new();
+    // -------------- UI references ----------------------
+    [Header("UI")]
+    public TMP_Text scoreText;          // drag ScoreText here
+    public TMP_Text comboText;          // drag ComboText here
+
+    // -------------- Runtime values ---------------------
+     private readonly List<RingBehaviour> _rings = new();
+    private int _score;
+    private int _combo = 1;
 
     // -------------- Gameplay tuning --------------------
     [Header("Timing (seconds)")]
@@ -45,6 +53,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         SpawnRings();
+        UpdateHud();
         StartCoroutine(RoundLoop());
     }
 
@@ -92,7 +101,20 @@ public class GameManager : MonoBehaviour
     public void OnRingTapped(RingBehaviour ring)
     {
         Debug.Log($"✅ Ring {ring.RingIndex} tapped on round {_roundNumber}");
-        // TODO: Add score, combo, particles, etc.
+         
+        // ---------- scoring ----------
+        float speedBonus = Mathf.Lerp(1f, 2f,   // maps 0 → 1 to a 1x→2x bonus
+        (_currentActiveTime - ring.Elapsed) / _currentActiveTime);
+        
+        int basePoints = 10;
+        int gained = Mathf.RoundToInt(basePoints * speedBonus * _combo);
+        
+        _score += gained;
+        
+        // ---------- combo ----------
+        _combo = Mathf.Min(_combo + 1, 10); // cap at 10× so it doesn't explode
+        
+        UpdateHud();
     }
 
     /// <summary>
@@ -101,6 +123,16 @@ public class GameManager : MonoBehaviour
     public void OnRingMissed(RingBehaviour ring)
     {
         Debug.Log($"❌ Missed ring {ring.RingIndex} on round {_roundNumber}");
-        // TODO: decrement lives or apply penalty
+        _combo = 1;          // reset combo
+        _score = Mathf.Max(0, _score - 5);  // small penalty
+        
+        UpdateHud();
     }
+
+        private void UpdateHud()
+    {
+        if (scoreText) scoreText.text = $"Score {_score}";
+        if (comboText) comboText.text = $"Combo x{_combo}";
+    }
+
 }

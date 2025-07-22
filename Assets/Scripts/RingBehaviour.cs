@@ -8,8 +8,13 @@ using System.Collections;
 /// keeping GameManager lean.
 /// </summary>
 [RequireComponent(typeof(Button))]
+
 public class RingBehaviour : MonoBehaviour
 {
+
+    // How long since Activate() started – read by GameManager for speed bonus
+    public float Elapsed { get; private set; }
+
     // Public read-only so GameManager can inspect status
     public bool IsResolved { get; private set; }
     public int RingIndex { get; private set; }
