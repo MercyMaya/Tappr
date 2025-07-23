@@ -989,7 +989,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -1036,6 +1036,7 @@ MonoBehaviour:
   initialActiveTime: 1.5
   minActiveTime: 0.4
   timeDecayPerRound: 0.02
+  interRoundPause: 0.25
   startingLives: 3
 --- !u!1 &1378510319
 GameObject:

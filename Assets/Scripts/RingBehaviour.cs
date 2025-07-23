@@ -23,6 +23,8 @@ public class RingBehaviour : MonoBehaviour
     private Image _image;
     private Button _button;
     private GameManager _gm;
+    // Unique material instance so we can tint emission per ring
+    private Material _matInstance;
 
     private Coroutine _activeRoutine;
 
@@ -31,6 +33,15 @@ public class RingBehaviour : MonoBehaviour
         _image = GetComponent<Image>();
         _button = GetComponent<Button>();
         _button.onClick.AddListener(HandleTap);
+
+
+                // Clone the shared material so each ring has its own emission colour
+        if (_image.material != null)
+                    {
+            _matInstance = Instantiate(_image.material);
+            _image.material = _matInstance;
+                    }
+
 
         // Start inactive / dim
         SetRingActive(false);
@@ -89,8 +100,32 @@ public class RingBehaviour : MonoBehaviour
 
     private void SetRingActive(bool state)
     {
-        // Visual: bright cyan when active, dim grey when idle
-        _image.color = state ? new Color(0f, 1f, 1f, 1f) : new Color(0.2f, 0.2f, 0.2f, 1f);
-        // NOTE: When we add Bloom, any full-intensity color looks neon.
+                if (state)
+                    {
+                        // ACTIVE: bright accent with bloom
+                        if (_matInstance)
+                            {
+                _matInstance.SetColor("_EmissionColor", _gm.AccentColor);
+                _matInstance.SetColor("_BaseColor", _gm.AccentColor);
+                            }
+                        else
+                            {
+                _image.color = _gm.AccentColor; // fallback if no material
+                            }
+                    }
+                else
+                    {
+                        // IDLE: dim grey, zero emission
+            Color idle = new(0.2f, 0.2f, 0.2f, 1f);
+                        if (_matInstance)
+                            {
+                _matInstance.SetColor("_EmissionColor", Color.black);
+                _matInstance.SetColor("_BaseColor", idle);
+                            }
+                        else
+                            {
+                _image.color = idle;
+                            }
+                    }
     }
 }
