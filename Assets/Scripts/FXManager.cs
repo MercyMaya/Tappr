@@ -33,12 +33,23 @@ public class FXManager : MonoBehaviour
     public void PlayTap(Vector3 worldPos)
     {
         _audio.PlayOneShot(tapClip, 0.9f);
-        if (hitSparkPrefab) Instantiate(hitSparkPrefab, worldPos, Quaternion.identity, transform);
+             if (hitSparkPrefab)
+                    {
+                        // normal cyan/accent spark
+            Instantiate(hitSparkPrefab, worldPos, Quaternion.identity, transform);
+                    }
     }
 
     public void PlayMiss(Vector3 worldPos)
     {
         _audio.PlayOneShot(missClip, 0.9f);
+            // Re-use the same prefab but tint it deep red for a “miss” flash
+    if (hitSparkPrefab)
+                {
+            var spark = Instantiate(hitSparkPrefab, worldPos, Quaternion.identity, transform);
+            var main = spark.main;
+            main.startColor = new ParticleSystem.MinMaxGradient(new Color(1f, 0.2f, 0.2f));
+                }
     }
 
     public void Shake(float amplitude, float duration) =>

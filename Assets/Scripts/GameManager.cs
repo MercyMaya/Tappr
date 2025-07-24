@@ -219,7 +219,7 @@ Color baseC = palette[Random.Range(0, palette.Length)];
 
         // Tiny camera kick every 10-hit streak for celebration
         if (_combo % 10 == 0)
-        FXManager.I.Shake(0.05f, 0.15f);
+        FXManager.I.Shake(0.12f, 0.18f);
 
         UpdateHud();
     }
