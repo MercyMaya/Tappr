@@ -217,6 +217,10 @@ Color baseC = palette[Random.Range(0, palette.Length)];
 
         _combo = Mathf.Min(_combo + 1, 10);  // cap runaway multiplier
 
+        // Tiny camera kick every 10-hit streak for celebration
+        if (_combo % 10 == 0)
+        FXManager.I.Shake(0.05f, 0.15f);
+
         UpdateHud();
     }
 
@@ -227,6 +231,9 @@ Color baseC = palette[Random.Range(0, palette.Length)];
 
         _lives = Mathf.Max(0, _lives - 1);    // pluck a heart
         if (_lives == 0) { EndGame(); return; }
+
+        // Thud SFX at miss location
+        FXManager.I.PlayMiss(ring.transform.position);
 
         UpdateHud();
     }

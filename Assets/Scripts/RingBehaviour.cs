@@ -95,6 +95,9 @@ public class RingBehaviour : MonoBehaviour
         IsResolved = true;
         SetRingActive(false);
 
+        // Play juicy feedback right at the ring centre
+        FXManager.I.PlayTap(transform.position);
+
         _gm.OnRingTapped(this);
     }
 
